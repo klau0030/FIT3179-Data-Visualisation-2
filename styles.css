@@ -1,0 +1,156 @@
+:root {
+  --max-width: 1200px;
+  --type-sans: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --muted: #666;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--type-sans);
+  color: #000;
+  background: #fff;
+}
+main {
+  max-width: var(--max-width);
+  margin: 28px auto;
+  padding: 12px;
+}
+.page-title {
+  font-family:serif;
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+.lede {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 14px;
+}
+#vis {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+#vis > .vega-embed {
+  width: 100%;
+}
+
+.cap-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  align-items: start;
+  /* Make rows sized to their content so tall visualizations expand the grid rather than overlap neighbors */
+  grid-auto-rows: auto;
+  grid-auto-flow: row;
+  align-content: start;
+}
+.caption {
+  background: #fcfcff;
+  border: 1px solid #eee;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.caption strong {
+  display: block;
+  color: #111;
+  margin-bottom: 6px;
+}
+.caption-left {
+  grid-column: 1;
+}
+
+.center-column {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  justify-items: center;
+}
+
+/* Barchart row uses grid to position synopsis and the chart; stacks on narrow viewports */
+.barchart-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 18px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+.barchart-synopsis {
+  background: #fbfbff;
+  border: 1px solid #eee;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  /* color: var(--muted); */
+}
+.barchart-synopsis strong { display:block; color:#111; margin-bottom:6px }
+.barchart-embed {
+  display: block;
+  justify-self: stretch;
+}
+
+/* Place the main visual panels explicitly so later additions (like #lfs-vis) don't get auto-placed into the right column */
+#choropleth {
+  width: 720px;
+  max-width: 100%;
+}
+
+#barchart {
+  width: 720px;
+  max-width: 100%;
+}
+
+/* Labour force visuals should sit in the centre column (under the map/bar area)
+   so they never overlap the right caption. Make the block flow naturally and
+   prevent it from overflowing into neighboring columns. */
+#lfs-vis {
+  grid-column: 1 / -1; /* span full width below */
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin-top: 6px;
+}
+
+.caption-right {
+  grid-column: 2;
+}
+.meta {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.method {
+  margin: 0;
+}
+
+@media (max-width: 1000px) {
+  .cap-grid {
+    grid-template-columns: 1fr;
+  }
+  .barchart-row {
+    grid-template-columns: 1fr;
+  }
+  .caption {
+    order: initial;
+  }
+}
+
+/* Ensure embed scales on smaller screens */
+@media (max-width: 1000px) {
+  main {
+    padding: 8px;
+  }
+  .page-title {
+    font-size: 18px;
+  }
+}
+
+/* small cleanup for embedded vega elements */
+.vega-embed .vega-actions {
+  right: 8px;
+}

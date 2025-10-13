@@ -1,0 +1,151 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "params": [
+    {
+      "name": "state_filter",
+      "value": "All",
+      "bind": {
+        "input": "select",
+        "name": "Select State: ",
+        "options": [
+          "All",
+          "Johor",
+          "Kedah",
+          "Kelantan",
+          "Melaka",
+          "Negeri Sembilan",
+          "Pahang",
+          "Perak",
+          "Perlis",
+          "Pulau Pinang",
+          "Sabah",
+          "Sarawak",
+          "Selangor",
+          "Terengganu",
+          "W.P. Kuala Lumpur",
+          "W.P. Labuan",
+          "W.P. Putrajaya"
+        ]
+      }
+    }
+  ],
+  "width": 720,
+  "height": 480,
+  "title": "Monthly Arrivals per 100,000 Population by State of Entry to Malaysia (2024)",
+  "projection": {
+    "type": "mercator",
+    "center": [109.5, 4.5],
+    "scale": 1950
+  },
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Week-10-Homework/refs/heads/main/ne_110m_geography_regions_polys.topojson",
+        "format": {
+          "type": "topojson",
+          "feature": "ne_110m_geography_regions_polys"
+        }
+      },
+      "mark": { "type": "geoshape", "fill": null, "stroke": "lightgray" }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Week-10-Homework/refs/heads/main/my.json",
+        "format": {
+          "type": "json",
+          "property": "features"
+        }
+      },
+      "mark": { "type": "geoshape", "fill": null, "stroke": "lightgray" }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Week-10-Homework/refs/heads/main/my.json",
+        "format": { "type": "json", "property": "features" }
+      },
+      "transform": [
+        {
+          "lookup": "properties.name",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/arrivals_by_state_2024.csv",
+              "format": { "type": "csv" }
+            },
+            "key": "soe",
+            "fields": ["total_arrivals"]
+          },
+          "default": 0
+        },
+        {
+          "calculate": "datum['properties.name']",
+          "as": "pop_state"
+        },
+        {
+          "lookup": "pop_state",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/population_state_2024.csv",
+              "format": { "type": "csv" }
+            },
+            "key": "state",
+            "fields": ["population"]
+          },
+          "default": 1
+        },
+        {
+          "calculate": "(datum.total_arrivals / (datum.population * 1000)) * 100000",
+          "as": "arrivals_per_100k"
+        },
+        { "calculate": "datum.population * 1000", "as": "population_count" },
+        { "filter": "state_filter == 'All' || datum.pop_state == state_filter" }
+      ],
+      "mark": { "type": "geoshape", "stroke": "black", "strokeWidth": 0.5 },
+      "encoding": {
+        "color": {
+          "field": "arrivals_per_100k",
+          "type": "quantitative",
+          "title": "Arrivals per 100,000 Population",
+          "scale": {
+            "type": "threshold",
+            "domain": [10, 100, 1000, 10000, 50000, 100000, 200000],
+            "range": [
+              "#f7fbff",
+              "#deebf7",
+              "#c6dbef",
+              "#9ecae1",
+              "#6baed6",
+              "#2171b5",
+              "#08306b",
+              "#67001f"
+            ]
+          }
+        },
+        "tooltip": [
+          {
+            "field": "properties.name",
+            "type": "nominal",
+            "title": "State"
+          },
+          {
+            "field": "total_arrivals",
+            "type": "quantitative",
+            "title": "Total Arrivals",
+            "format": ","
+          },
+          {
+            "field": "population_count",
+            "type": "quantitative",
+            "title": "Population",
+            "format": ","
+          },
+          {
+            "field": "arrivals_per_100k",
+            "type": "quantitative",
+            "title": "Arrivals per 100,000 Population",
+            "format": ",.2f"
+          }
+        ]
+      }
+    }
+  ]
+}

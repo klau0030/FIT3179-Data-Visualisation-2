@@ -1,0 +1,133 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Bar chart: States ranked by arrivals per 100k (2024)",
+  "params": [
+    {
+      "name": "state_filter",
+      "value": "All"
+    },
+    {
+      "name": "top_n",
+      "value": 10,
+      "bind": {
+        "input": "select",
+        "name": "Top N states: ",
+        "options": [3, 5, 10, 15, "All"]
+      }
+    }
+  ],
+  "width": 420,
+  "height": 560,
+  "data": {
+    "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/arrivals_by_state_2024.csv",
+    "format": { "type": "csv" }
+  },
+  "transform": [
+    {
+      "lookup": "soe",
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/population_state_2024.csv",
+          "format": { "type": "csv" }
+        },
+        "key": "state",
+        "fields": ["population"]
+      },
+      "default": 1
+    },
+    {
+      "calculate": "(datum.total_arrivals / (datum.population * 1000)) * 100000",
+      "as": "arrivals_per_100k"
+    },
+    { "filter": "state_filter == 'All' || datum.soe == state_filter" },
+    {
+      "window": [{ "op": "rank", "as": "rank" }],
+      "sort": [{ "field": "arrivals_per_100k", "order": "descending" }]
+    },
+    { "filter": "(top_n == 'All') || toNumber(datum.rank) <= toNumber(top_n)" }
+  ],
+  "encoding": {
+    "y": {
+      "field": "soe",
+      "type": "ordinal",
+      "sort": { "field": "arrivals_per_100k", "order": "descending" },
+      "axis": { "title": null, "labelLimit": 140 }
+    },
+    "x": {
+      "field": "arrivals_per_100k",
+      "type": "quantitative",
+      "axis": { "title": "Arrivals per 100k", "grid": false }
+    },
+    "tooltip": [
+      { "field": "soe", "type": "nominal", "title": "State" },
+      {
+        "field": "total_arrivals",
+        "type": "quantitative",
+        "title": "Total arrivals",
+        "format": ","
+      },
+      {
+        "field": "population",
+        "type": "quantitative",
+        "title": "Population (thousands)",
+        "format": ",.1f"
+      },
+      {
+        "field": "arrivals_per_100k",
+        "type": "quantitative",
+        "title": "Arrivals per 100k",
+        "format": ".1f"
+      }
+    ]
+  },
+  "layer": [
+    {
+      "mark": {
+        "type": "rule",
+        "orient": "horizontal",
+        "stroke": "#e6e6e6",
+        "strokeWidth": 1
+      },
+      "encoding": {
+        "x": { "field": "arrivals_per_100k", "type": "quantitative" },
+        "y": { "field": "soe", "type": "ordinal" }
+      }
+    },
+    {
+      "mark": {
+        "type": "point",
+        "filled": true,
+        "size": 110,
+        "color": "#1f78b4"
+      },
+      "encoding": {
+        "x": { "field": "arrivals_per_100k", "type": "quantitative" },
+        "y": { "field": "soe", "type": "ordinal" }
+      }
+    },
+    {
+      "mark": { "type": "text", "align": "left", "dx": 6, "fontSize": 11 },
+      "encoding": {
+        "text": {
+          "field": "arrivals_per_100k",
+          "type": "quantitative",
+          "format": ".0f"
+        },
+        "x": { "field": "arrivals_per_100k", "type": "quantitative" },
+        "y": { "field": "soe", "type": "ordinal" }
+      }
+    }
+  ],
+  "config": {
+    "background": "#ffffff",
+    "title": {
+      "fontSize": 14,
+      "font": "Helvetica, Arial, sans-serif",
+      "anchor": "start"
+    },
+    "axis": {
+      "labelFont": "Helvetica, Arial, sans-serif",
+      "titleFont": "Helvetica, Arial, sans-serif"
+    }
+  }
+}

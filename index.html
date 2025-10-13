@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Import Vega & Vega-Lite -->
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+
+    <!-- CSS file -->
+    <link rel="stylesheet" type="text/css" href="styles.css" media="all" />
+  </head>
+  <body>
+    <main>
+      <h1 class="page-title">Immigration - Driving Away Employment?</h1>
+      <p class="lede">
+        Comparing total arrivals to each state adjusted per 100,000 population.
+        Use the filter to focus on a single state. Data sources: local CSVs and
+        GeoJSON.
+      </p>
+      <div class="cap-grid">
+        <aside
+          class="caption caption-left"
+          id="caption-intro"
+          aria-hidden="false"
+        >
+          <strong>What to look for</strong>
+          <div>
+            States with darker hues have more arrivals per 100,000 people. The
+            bar chart ranks states so you can compare magnitudes precisely.
+          </div>
+        </aside>
+
+        <section
+          id="choropleth"
+          role="region"
+          aria-label="Arrivals choropleth"
+        ></section>
+
+        <div
+          class="barchart-row"
+          role="region"
+          aria-label="Arrivals ranked chart and synopsis"
+        >
+          <aside class="barchart-synopsis" aria-label="Dashboard synopsis">
+            <p>
+              This dashboard compares monthly arrivals to each Malaysian state
+              adjusted per 100,000 population and juxtaposes these with labour
+              force indicators (participation and unemployment rates) over time.
+              Use the state selector to focus on a single state and the Top-N
+              control to limit the ranked list.
+            </p>
+            <p>
+              Purpose: help explore where arrivals are concentrated relative to
+              population and whether patterns align with labour market outcomes.
+            </p>
+          </aside>
+
+          <div
+            class="barchart-embed"
+            id="barchart"
+            role="region"
+            aria-label="Arrivals ranked chart"
+          ></div>
+        </div>
+
+        <section
+          id="lfs-vis"
+          role="region"
+          aria-label="Labour force quarterly indicators"
+        >
+          <h2 class="vis-title">
+            Labour force indicators by state (quarterly)
+          </h2>
+          <p class="vis-lede">
+            Stacked line chart showing participation rate and unemployment rate
+            over time for each state.
+          </p>
+          <div class="lfs-legend" aria-hidden="false">
+            <svg
+              width="320"
+              height="48"
+              role="img"
+              aria-label="Legend: solid line equals participation rate; dashed line equals unemployment rate"
+            >
+              <g>
+                <line
+                  x1="8"
+                  y1="14"
+                  x2="48"
+                  y2="14"
+                  stroke="#1f77b4"
+                  stroke-width="3"
+                />
+                <text x="56" y="18" font-size="12" fill="#222">
+                  Participation rate - solid line
+                </text>
+              </g>
+              <g>
+                <line
+                  x1="8"
+                  y1="34"
+                  x2="48"
+                  y2="34"
+                  stroke="#ff7f0e"
+                  stroke-width="3"
+                  stroke-dasharray="6,3"
+                />
+                <text x="56" y="38" font-size="12" fill="#222">
+                  Unemployment rate - dashed line
+                </text>
+              </g>
+            </svg>
+          </div>
+          <div
+            id="lfs-embed"
+            class="vega-embed-target"
+            role="region"
+            aria-label="Labour force visualization"
+          ></div>
+        </section>
+      </div>
+    </main>
+
+    <script type="text/javascript">
+      var choroplethView, barchartView, lfsView;
+
+      vegaEmbed("#choropleth", "map.vg.json", {
+        actions: { export: true, source: false }
+      })
+        .then(function (result) {
+          choroplethView = result.view;
+        })
+        .catch(function (err) {
+          console.error(err);
+          var node = document.getElementById("choropleth");
+          node.innerText = "Failed to load map: " + err.message;
+        });
+
+      vegaEmbed("#barchart", "lollipop.vg.json", {
+        actions: { export: true, source: false }
+      })
+        .then(function (result) {
+          barchartView = result.view;
+        })
+        .catch(function (err) {
+          console.error(err);
+          var node = document.getElementById("barchart");
+          node.innerText = "Failed to load bar chart: " + err.message;
+        });
+
+      vegaEmbed("#lfs-embed", "lfs.vg.json", {
+        actions: { export: true, source: false }
+      })
+        .then(function (result) {
+          lfsView = result.view;
+        })
+        .catch(function (err) {
+          console.error("LFS viz error", err);
+          var node = document.getElementById("lfs-embed");
+          node.innerText =
+            "Failed to load labour force visualization: " + err.message;
+        });
+    </script>
+  </body>
+</html>
