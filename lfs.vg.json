@@ -1,138 +1,58 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Single-chart view of labour force participation (p_rate) and unemployment rate (u_rate) with state and time-window filters.",
-  "title": {
-    "text": "Labour force indicators",
-    "anchor": "start"
-  },
-  "width": 720,
-  "height": 500,
+  "description": "Split view: participation and unemployment stacked for clarity",
   "params": [
-    {
-      "name": "state_filter",
-      "value": "All",
-      "bind": {
-        "input": "select",
-        "name": "State: ",
-        "options": [
-          "All",
-          "Johor",
-          "Kedah",
-          "Kelantan",
-          "Melaka",
-          "Negeri Sembilan",
-          "Pahang",
-          "Perak",
-          "Perlis",
-          "Pulau Pinang",
-          "Sabah",
-          "Sarawak",
-          "Selangor",
-          "Terengganu",
-          "W.P. Kuala Lumpur",
-          "W.P. Labuan",
-          "W.P. Putrajaya"
-        ]
-      }
-    },
-    {
-      "name": "time_window",
-      "value": "All",
-      "bind": {
-        "input": "select",
-        "name": "Time window: ",
-        "options": ["All", "Last2", "2024"]
-      }
-    }
+    { "name": "state_filter", "value": "All", "bind": { "input": "select", "name": "State: ", "options": ["All","Johor","Kedah","Kelantan","Melaka","Negeri Sembilan","Pahang","Perak","Perlis","Pulau Pinang","Sabah","Sarawak","Selangor","Terengganu","W.P. Kuala Lumpur","W.P. Labuan","W.P. Putrajaya"] } },
+    { "name": "time_window", "value": "All", "bind": { "input": "select", "name": "Time: ", "options": ["All","Last 2 Years","2024"] } }
   ],
-  "data": {
-    "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/lfs_qtr_state.csv",
-    "format": { "type": "csv" }
-  },
-  "transform": [
+  "vconcat": [
     {
-      "filter": "(time_window == 'All') || (time_window == '2024' && year(datum.date) == 2024) || (time_window == 'Last2' && datum.date >= datetime(2023,1,1))"
-    },
-    { "filter": "state_filter == 'All' || datum.state == state_filter" }
-  ],
-  "layer": [
-    {
+      "title": "Participation rate (%)",
+      "width": 720,
+      "height": 220,
+      "data": { "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/lfs_qtr_state.csv", "format": { "type": "csv" } },
+      "transform": [
+        { "filter": "(time_window == 'All') || (time_window == '2024' && year(datum.date) == 2024) || (time_window == 'Last 2 Years' && datum.date >= datetime(2023,1,1))" },
+        { "filter": "state_filter == 'All' || datum.state == state_filter" }
+      ],
       "mark": { "type": "line", "point": true, "interpolate": "monotone" },
       "encoding": {
-        "x": {
-          "field": "date",
-          "type": "temporal",
-          "axis": { "title": "Quarter" }
-        },
-        "y": {
-          "field": "p_rate",
-          "type": "quantitative",
-          "axis": {
-            "title": "Participation rate (%)",
-            "grid": false,
-            "labelColor": "#1f77b4"
-          }
-        },
+        "x": { "field": "date", "type": "temporal", "axis": { "title": "Quarter" } },
+        "y": { "field": "p_rate", "type": "quantitative", "scale": { "domain": [0, 80] }, "axis": { "title": "Participation rate (%)", "grid": true } },
         "color": {
           "field": "state",
           "type": "nominal",
-          "scale": { "scheme": "category20" },
+          "scale": {
+            "range": [
+              "#1f77b4","#aec7e8","#ff7f0e","#ffbb78","#9467bd","#c5b0d5",
+              "#8c564b","#c49c94","#e377c2","#f7b6d2","#7f7f7f","#c7c7c7",
+              "#bcbd22","#dbdb8d","#17becf","#9edae5","#393b79","#5254a3",
+              "#637939","#8ca252"
+            ]
+          },
           "legend": { "title": "State" }
         },
-        "tooltip": [
-          { "field": "state", "type": "nominal" },
-          { "field": "date", "type": "temporal", "title": "Quarter" },
-          {
-            "field": "p_rate",
-            "type": "quantitative",
-            "title": "Participation rate (%)"
-          }
-        ]
+        "tooltip": [ { "field": "state", "type": "nominal" }, { "field": "date", "type": "temporal", "title": "Quarter" }, { "field": "p_rate", "type": "quantitative", "title": "Participation rate (%)" } ]
       }
     },
     {
-      "mark": {
-        "type": "line",
-        "point": true,
-        "interpolate": "monotone",
-        "strokeDash": [4, 2]
-      },
+      "title": "Unemployment rate (%)",
+      "width": 720,
+      "height": 180,
+      "data": { "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/lfs_qtr_state.csv", "format": { "type": "csv" } },
+      "transform": [
+        { "filter": "(time_window == 'All') || (time_window == '2024' && year(datum.date) == 2024) || (time_window == 'Last 2 Years' && datum.date >= datetime(2023,1,1))" },
+        { "filter": "state_filter == 'All' || datum.state == state_filter" }
+      ],
+      "mark": { "type": "line", "point": true, "interpolate": "monotone", "strokeDash": [4,2] },
       "encoding": {
-        "x": { "field": "date", "type": "temporal" },
-        "y": {
-          "field": "u_rate",
-          "type": "quantitative",
-          "axis": {
-            "title": "Unemployment rate (%)",
-            "orient": "right",
-            "labelColor": "#ff7f0e"
-          }
-        },
-        "color": {
-          "field": "state",
-          "type": "nominal",
-          "scale": { "scheme": "category20" },
-          "legend": null
-        },
-        "tooltip": [
-          { "field": "state", "type": "nominal" },
-          { "field": "date", "type": "temporal", "title": "Quarter" },
-          {
-            "field": "u_rate",
-            "type": "quantitative",
-            "title": "Unemployment rate (%)"
-          }
-        ]
+        "x": { "field": "date", "type": "temporal", "axis": { "title": "Quarter" } },
+        "y": { "field": "u_rate", "type": "quantitative", "scale": { "domain": [0, 10] }, "axis": { "title": "Unemployment rate (%)", "grid": true } },
+  "color": { "field": "state", "type": "nominal", "scale": { "scheme": "category20b" }, "legend": null },
+        "tooltip": [ { "field": "state", "type": "nominal" }, { "field": "date", "type": "temporal", "title": "Quarter" }, { "field": "u_rate", "type": "quantitative", "title": "Unemployment rate (%)" } ]
       }
     }
   ],
-  "resolve": { "scale": { "y": "independent" } },
-  "config": {
-    "background": "#ffffff",
-    "axis": {
-      "labelFont": "Helvetica, Arial, sans-serif",
-      "titleFont": "Helvetica, Arial, sans-serif"
-    },
-    "legend": { "labelFont": "Helvetica, Arial, sans-serif" }
-  }
+  "resolve": { "scale": { "color": "shared" } },
+  "config": { "background": "#ffffff", "axis": { "labelFont": "Helvetica, Arial, sans-serif", "titleFont": "Helvetica, Arial, sans-serif" }, "legend": { "labelFont": "Helvetica, Arial, sans-serif" }, "title": { "font": "Times New Roman, Georgia, serif", "fontSize": 16 } }
 }

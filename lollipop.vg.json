@@ -16,7 +16,7 @@
       }
     }
   ],
-  "width": 420,
+  "width": 612,
   "height": 560,
   "data": {
     "url": "https://raw.githubusercontent.com/klau0030/FIT3179-Data-Visualisation-2/refs/heads/main/arrivals_by_state_2024.csv",
@@ -51,7 +51,7 @@
       "field": "soe",
       "type": "ordinal",
       "sort": { "field": "arrivals_per_100k", "order": "descending" },
-      "axis": { "title": null, "labelLimit": 140 }
+      "axis": { "title": null, "labelLimit": 260, "labelFont": "Helvetica, Arial, sans-serif" }
     },
     "x": {
       "field": "arrivals_per_100k",
@@ -85,8 +85,8 @@
       "mark": {
         "type": "rule",
         "orient": "horizontal",
-        "stroke": "#e6e6e6",
-        "strokeWidth": 1
+        "stroke": "gray",
+        "strokeWidth": 2.5
       },
       "encoding": {
         "x": { "field": "arrivals_per_100k", "type": "quantitative" },
@@ -97,7 +97,7 @@
       "mark": {
         "type": "point",
         "filled": true,
-        "size": 110,
+        "size": 220,
         "color": "#1f78b4"
       },
       "encoding": {
@@ -121,8 +121,8 @@
   "config": {
     "background": "#ffffff",
     "title": {
-      "fontSize": 14,
-      "font": "Helvetica, Arial, sans-serif",
+      "fontSize": 16,
+      "font": "Times New Roman, Georgia, serif",
       "anchor": "start"
     },
     "axis": {

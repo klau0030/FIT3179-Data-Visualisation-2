@@ -1,6 +1,7 @@
 :root {
   --max-width: 1200px;
   --type-sans: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  --type-serif: "Times New Roman", Georgia, serif;
   --muted: #666;
 }
 html,
@@ -16,16 +17,30 @@ main {
   margin: 28px auto;
   padding: 12px;
 }
+
+footer {
+  max-width: var(--max-width);
+  margin: 0 auto 24px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .page-title {
-  font-family:serif;
-  font-size: 20px;
-  margin: 0 0 6px;
+  font-family: var(--type-serif);
+  font-size: 32px;
+  margin: 0 0 8px;
 }
 .lede {
   margin: 0 0 16px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
+  /* constrain line length to roughly 10 words per line by limiting width */
+  max-width: 52ch;
+  line-height: 1.45;
 }
+.vis-title { font-family: var(--type-serif); font-size:20px; margin:6px 0 }
+.vis-lede { max-width:50ch; color:var(--muted); margin:4px 0 12px; font-family: var(--type-sans); }
 #vis {
   display: flex;
   justify-content: center;
@@ -96,13 +111,49 @@ main {
 
 /* Place the main visual panels explicitly so later additions (like #lfs-vis) don't get auto-placed into the right column */
 #choropleth {
-  width: 720px;
+  justify-self: end; /* align the chart to the right of the grid cell */
+  max-width: 720px; /* prevent overflow into neighbouring columns */
   max-width: 100%;
 }
+
+/* Overlay caption that sits on top of the choropleth */
+.overlay-caption-choropleth {
+  position: absolute;
+  top: 300px;
+  left: 600px;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid #eee;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  max-width: 260px;
+  font-size: 13px;
+  color: #111;
+  z-index: 10;
+}
+
+.overlay-caption-lollipop {
+  position: absolute;
+  top: 1100px;
+  left: 800px;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid #eee;
+  padding: 10px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  max-width: 260px;
+  font-size: 13px;
+  color: #111;
+  z-index: 10;
+}
+
+/* Ensure the choropleth container positions children relative to itself */
+#choropleth { position: relative }
 
 #barchart {
   width: 720px;
   max-width: 100%;
+  justify-self: end;
 }
 
 /* Labour force visuals should sit in the centre column (under the map/bar area)
@@ -115,6 +166,20 @@ main {
   max-width: 100%;
   margin-top: 6px;
 }
+
+/* Hide the 3-dot Vega actions menu globally (safety fallback) */
+.vega-actions { display: none !important; }
+
+/* Improve visual hierarchy: make labour force small title less dominant */
+.lfs-legend { margin-top: 6px; }
+.vis-title { font-weight: 600; color: #111 }
+.page-title { font-weight: 700 }
+
+/* Tighter spacing for embed targets to avoid misalignment */
+.vega-embed-target, .vega-embed { width: 100% !important; box-sizing: border-box }
+
+.small-annotation { grid-column: 2; background:#fff9f0; border:1px solid #ffe6cc; padding:8px; border-radius:6px; margin-top:8px; max-width:360px }
+.small-annotation p { margin:0; font-size:13px }
 
 .caption-right {
   grid-column: 2;

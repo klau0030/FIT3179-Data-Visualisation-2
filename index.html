@@ -8,6 +8,17 @@
 
     <!-- CSS file -->
     <link rel="stylesheet" type="text/css" href="styles.css" media="all" />
+    <!-- Metadata -->
+    <meta name="author" content="klau0030" />
+    <meta
+      name="description"
+      content="Monthly arrivals to Malaysian states adjusted per 100k population (2024)"
+    />
+    <meta name="date" content="2024-01-01" />
+    <link
+      rel="canonical"
+      href="https://github.com/klau0030/FIT3179-Data-Visualisation-2"
+    />
   </head>
   <body>
     <main>
@@ -27,6 +38,14 @@
           <div>
             States with darker hues have more arrivals per 100,000 people. The
             bar chart ranks states so you can compare magnitudes precisely.
+          </div>
+        </aside>
+
+        <aside class="overlay-caption-choropleth" id="caption-over-choropleth" aria-hidden="false">
+          <strong>Observation</strong>
+          <div>
+            Selangor and Johor show the largest total arrivals; W.P. Kuala
+            Lumpur and W.P. Putrajaya show 0 recorded arrivals in 2024.
           </div>
         </aside>
 
@@ -55,12 +74,27 @@
             </p>
           </aside>
 
+          <aside class="overlay-caption-lollipop" id="caption-over-lollipop" aria-hidden="false">
+          <div>
+            After normalising arrivals per 100,000 population, Perlis and
+            Labuan appear among the highest-ranked states - their per-capita
+            arrival rates exceed those of several larger states despite much
+            lower absolute arrival counts.
+          </div>
+        </aside>
+
           <div
             class="barchart-embed"
             id="barchart"
             role="region"
             aria-label="Arrivals ranked chart"
           ></div>
+          <aside class="small-annotation" aria-hidden="true">
+            <p>
+              <strong>Note:</strong> Values shown are monthly arrivals per 100k
+              population. Use the state selector to focus on a single state.
+            </p>
+          </aside>
         </div>
 
         <section
@@ -125,7 +159,7 @@
       var choroplethView, barchartView, lfsView;
 
       vegaEmbed("#choropleth", "map.vg.json", {
-        actions: { export: true, source: false }
+        "actions": false
       })
         .then(function (result) {
           choroplethView = result.view;
@@ -137,7 +171,7 @@
         });
 
       vegaEmbed("#barchart", "lollipop.vg.json", {
-        actions: { export: true, source: false }
+        "actions": false
       })
         .then(function (result) {
           barchartView = result.view;
@@ -149,7 +183,7 @@
         });
 
       vegaEmbed("#lfs-embed", "lfs.vg.json", {
-        actions: { export: true, source: false }
+        "actions": false
       })
         .then(function (result) {
           lfsView = result.view;
@@ -162,4 +196,27 @@
         });
     </script>
   </body>
+  <footer>
+    <p>Author: Lau Ka-Kiat</p>
+    <p>Created: 14/10/2025</p>
+    <p>
+      GitHub Link:
+      <a href="https://github.com/klau0030/FIT3179-Data-Visualisation-2"
+        >https://github.com/klau0030/FIT3179-Data-Visualisation-2</a
+      >
+    </p>
+    <p>
+      Data Sources:
+      <a href="https://data.gov.my/data-catalogue/population_state"
+        >Malaysian Population</a
+      >,
+      <a href="https://data.gov.my/data-catalogue/lfs_qtr_state"
+        >Malaysian Quarterly Principle Labour Force Statistics</a
+      >, <br />
+      <a href="https://data.gov.my/data-catalogue/arrivals_soe"
+        >Malaysian Monthly Arrivals by State</a
+      >,
+      <a href="https://simplemaps.com/gis/country/my">Malaysia GIS Map File</a>
+    </p>
+  </footer>
 </html>
